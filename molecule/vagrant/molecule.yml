@@ -31,5 +31,3 @@ lint: |
   yamllint -c .yamllint .
   flake8
   ansible-lint
-verifier:
-  name: ansible
