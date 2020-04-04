@@ -24,8 +24,12 @@ provisioner:
     defaults:
       stdout_callback: yaml
       interpreter_python: auto_silent
+verifier:
+  name: ansible
 lint: |
   set -e
   yamllint -c .yamllint .
   flake8
   ansible-lint
+verifier:
+  name: ansible
