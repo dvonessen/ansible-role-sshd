@@ -1,0 +1,6 @@
+---
+- name: reload sshd
+  systemd:
+    name: "{{ sshd_sshd_daemon }}"
+    state: reloaded
+  become: true

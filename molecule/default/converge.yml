@@ -4,4 +4,105 @@
   remote_user: ansible
   debugger: on_failed
   roles:
-    - role: ansible-role-$ROLE_NAME
+    - role: ansible-role-sshd
+  vars:
+    sshd_no_log: false
+    sshd_config_port: 22222
+    sshd_config_host_key_config:
+      - file_name: ssh_host_ed25519_key
+        private_key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+          QyNTUxOQAAACB8N09sINOUBPZ5raAMp/g/fydNGjyqzU8710fdL+/OtQAAALDiBy/B4gcv
+          wQAAAAtzc2gtZWQyNTUxOQAAACB8N09sINOUBPZ5raAMp/g/fydNGjyqzU8710fdL+/OtQ
+          AAAEDrJnQzkmyLmpY+S2RjJhY0iicevFZJOBIMWe67Qm5ecXw3T2wg05QE9nmtoAyn+D9/
+          J00aPKrNTzvXR90v7861AAAAKU1vbGVjdWxlIHRlc3QgZWQyNTUxOSBwZXJzaXN0ZW50IG
+          hvc3Qga2V5AQIDBA==
+          -----END OPENSSH PRIVATE KEY-----
+        public_key: >
+          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHw3T2wg05QE9nmtoAyn+D9/J00aPKrNTz
+          vXR90v7861 Molecule test ed25519 persistent host key
+      - file_name: ssh_host_rsa_key
+        private_key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          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
+          MEBQ==
+          -----END OPENSSH PRIVATE KEY-----
+        public_key: >
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyOiXa9QA+sS4Fv6RNcoVVDoERcP647i
+          7hQyx+qmQ4OHbJCzO+Zvx6eky6GzDiyPgK8OL1N5mg7iuexRQkPRkWXL7nLRzbAmx8ypjB
+          skIDhmwE2gmrbSPI1PTOZWSn2Woi3sBYC/rx+XxdJ9mkKFPLD8oueCtFsVPSKLvhgb4fED
+          /Q0m1ruLe71glDxQ32cuY9lXLOPqFJSW21vpFrN2vmkHYm7K4jm8JvNK6c12Cj7K5qpysg
+          g9Oj8Inso5b4GJjLUS0wxYhFaf6x1hQ0eFW+KFdY2RMwbcbWszbldT53aRtc8bd4378Rh9
+          zPV2bz7K6KD9U0zspBFXpC1fNBKqpOPGai4uVRny4R+ntcmObEtVE8QM/KVvOHsQdzDgXA
+          T4FbEFoQpR8UldQZjql9VwftART9ZMBolF48e9TERIyewHm4L5vBENvOnJ+fjlq2fny/f2
+          q11gKBHSd5BjAvF1kE0xZejH3XBbRFccv1hpqpH8AkNoBzPeJHNI9H4r2TqAvbDrfctaNP
+          zeitEQ7fQrC7Lk+qSok6flGjiGPeWWvVW3SZwGx52gKovu9vTjQVdnyHk5mXRBEl0OjrQ4
+          +CGmNc1Dt3nKfz/B3fxVQSwONo1ecXAO87saNUx7ryABKOE1dHlU7D6/VYnqLscJm6GISp
+          2tKjh9HqSOBHLIP3LfxEBw== Molecule test rsa persistent host key
+      - file_name: ssh_host_ecdsa_key
+        private_key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAArAAAABNlY2RzYS
+          1zaGEyLW5pc3RwNTIxAAAACG5pc3RwNTIxAAAAhQQBtYg3xdUdfj8Fnn+RZGCgZZiBQR3S
+          6IcBZSkdn1Tc5rwAyUTkqV6tpsmpXqBc2U4F0/L+oo3nDeC4DeEcjvuIXkkBeREBjUJFT9
+          us/sCKtZBOIZGGGjVaGS1RWBvBc7pfd1CJ/mVoEFXvM5TrH4NSnS4H+wtjc+FSMBTQlucj
+          mNvDZKkAAAEo4vI7xuLyO8YAAAATZWNkc2Etc2hhMi1uaXN0cDUyMQAAAAhuaXN0cDUyMQ
+          AAAIUEAbWIN8XVHX4/BZ5/kWRgoGWYgUEd0uiHAWUpHZ9U3Oa8AMlE5KlerabJqV6gXNlO
+          BdPy/qKN5w3guA3hHI77iF5JAXkRAY1CRU/brP7AirWQTiGRhho1WhktUVgbwXO6X3dQif
+          5laBBV7zOU6x+DUp0uB/sLY3PhUjAU0JbnI5jbw2SpAAAAQgGd5Zj+lFvHosruzqy8bgFv
+          SLQw7udXRY9Vc/dTrWEZWznV/EOWASTVfLQQ/cEkGpBAtqnFlD5hE2tWArGUY+LiQwAAAC
+          dNb2xlY3VsZSB0ZXN0IGVjZHNhIHBlcnNpc3RlbnQgaG9zdCBrZXkBAgM=
+          -----END OPENSSH PRIVATE KEY-----
+        public_key: >
+          ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAA
+          CFBAG1iDfF1R1+PwWef5FkYKBlmIFBHdLohwFlKR2fVNzmvADJROSpXq2myaleoFzZTgXT
+          8v6ijecN4LgN4RyO+4heSQF5EQGNQkVP26z+wIq1kE4hkYYaNVoZLVFYG8Fzul93UIn+ZW
+          gQVe8zlOsfg1KdLgf7C2Nz4VIwFNCW5yOY28NkqQ== Molecule test ecdsa persist
+          ent host key

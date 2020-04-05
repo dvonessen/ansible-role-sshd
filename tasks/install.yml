@@ -1,0 +1,6 @@
+---
+- name: ensure sshd is installed
+  package:
+    name: "{{ sshd_package_name }}"
+    state: present
+  become: yes

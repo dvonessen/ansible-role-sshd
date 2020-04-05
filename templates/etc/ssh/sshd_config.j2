@@ -1,0 +1,122 @@
+# {{ ansible_managed }}
+
+# This is the sshd server system-wide configuration file.  See
+# sshd_config(5) for more information.
+
+# The strategy used for options in the default sshd_config shipped with
+# OpenSSH is to specify options with their default value where
+# possible, but leave them commented.  Uncommented options override the
+# default value.
+
+# Network
+Port {{ sshd_config_port }}
+AddressFamily inet
+ListenAddress 0.0.0.0
+
+{% for host_key_file in sshd_config_host_key_config %}
+HostKey {{ sshd_dir }}/{{ host_key_file.file_name }}
+{% endfor %}
+
+# Ciphers and keying
+Ciphers {{ sshd_config_ciphers }}
+HostKeyAlgorithms {{ sshd_config_host_key_algorithms }}
+MACs {{ sshd_config_macs }}
+KexAlgorithms {{ sshd_config_kex_algorithms}}
+
+# Logging
+SyslogFacility {{ sshd_config_syslog_facility }}
+LogLevel {{ sshd_config_log_level }}
+
+# Authentication:
+LoginGraceTime 2m
+PermitRootLogin no
+StrictModes yes
+MaxAuthTries 5
+MaxSessions 10
+PubkeyAuthentication yes
+IgnoreRhosts yes
+IgnoreUserKnownHosts yes
+RhostsRSAAuthentication no
+HostbasedAuthentication no
+
+# The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
+# but this is overridden so installations will only check .ssh/authorized_keys
+AuthorizedKeysFile .ssh/authorized_keys
+
+# To disable tunneled clear text passwords, change to no here!
+PasswordAuthentication no
+PermitEmptyPasswords no
+
+# Change to no to disable s/key passwords
+ChallengeResponseAuthentication no
+
+# Kerberos options
+KerberosAuthentication no
+
+# GSSAPI options
+GSSAPIAuthentication no
+
+# Set this to 'yes' to enable PAM authentication, account processing,
+# and session processing. If this is enabled, PAM authentication will
+# be allowed through the ChallengeResponseAuthentication and
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via ChallengeResponseAuthentication may bypass
+# the setting of "PermitRootLogin without-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and ChallengeResponseAuthentication to 'no'.
+# WARNING: 'UsePAM no' is not supported in Red Hat Enterprise Linux and may cause several
+# problems.
+UsePAM yes
+
+AllowAgentForwarding yes
+AllowTcpForwarding yes
+GatewayPorts no
+X11Forwarding no
+PermitTTY yes
+PrintMotd yes
+PrintLastLog yes
+TCPKeepAlive yes
+UsePrivilegeSeparation sandbox
+PermitUserEnvironment no
+Compression no
+ClientAliveInterval 600
+ClientAliveCountMax 0
+UseDNS yes
+#PidFile /var/run/sshd.pid
+#MaxStartups 10:30:100
+PermitTunnel no
+#ChrootDirectory none
+#VersionAddendum none
+
+# no default banner path
+#Banner none
+
+# Accept locale-related environment variables
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+
+# override default of no subsystems
+Subsystem sftp	/usr/libexec/openssh/sftp-server
+
+# Example of overriding settings on a per-user basis
+#Match User anoncvs
+#	X11Forwarding no
+#	AllowTcpForwarding no
+#	PermitTTY no
+#	ForceCommand cvs server
+
+{% if ansible_distribution | lower == "amazon" and ansible_distribution_major_version | int == 2 %}
+AuthorizedKeysCommand /opt/aws/bin/eic_run_authorized_keys %u %f
+AuthorizedKeysCommandUser ec2-instance-connect
+{% endif %}
+
+{% for user in sshd_config_deny_users %}
+DenyUsers user
+{% endfor %}
+
+{% for group in sshd_config_deny_groups %}
+DenyGroups group
+{% endfor %}

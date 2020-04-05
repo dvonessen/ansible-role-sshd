@@ -1,0 +1,47 @@
+---
+- name: ensure  directory exists
+  file:
+    path: "{{ sshd_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+
+- name: configure sshd host keys
+  block:
+    - name: create sshd host private keys
+      copy:
+        content: "{{ item.private_key }}"
+        dest: "{{ sshd_dir }}/{{ item.file_name }}"
+        owner: "{{ sshd_private_key.owner }}"
+        group: "{{ sshd_private_key.group }}"
+        mode: "{{ sshd_private_key.mode }}"
+      loop: "{{ sshd_config_host_key_config }}"
+      no_log: "{{ sshd_no_log | bool }}"
+      notify:
+        - reload sshd
+
+    - name: create sshd host public keys
+      copy:
+        content: "{{ item.public_key }}"
+        dest: "{{ sshd_dir }}/{{ item.file_name }}.pub"
+        owner: "{{ sshd_public_key.owner }}"
+        group: "{{ sshd_public_key.group }}"
+        mode: "{{ sshd_public_key.mode }}"
+      no_log: "{{ sshd_no_log | bool }}"
+      loop: "{{ sshd_config_host_key_config }}"
+  when: sshd_config_host_key_config | length > 0
+  become: true
+
+- name: create sshd configuration
+  template:
+    src: etc/ssh/sshd_config.j2
+    dest: "{{ sshd_dir }}/sshd_config"
+    owner: "{{ sshd_sshd_config.owner }}"
+    group: "{{ sshd_sshd_config.group }}"
+    mode: "{{ sshd_sshd_config.mode }}"
+    validate: "sshd -t -f %s"
+  notify:
+    - reload sshd
+  become: true

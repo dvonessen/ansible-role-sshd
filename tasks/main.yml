@@ -1,1 +1,32 @@
 ---
+- name: include os dependent variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      skip: true
+  tags:
+    - always
+
+- name: import install.yml
+  import_tasks: install.yml
+  tags:
+    - sshd_all
+    - sshd_install
+
+- name: import configure.yml
+  import_tasks: configure.yml
+  tags:
+    - sshd_all
+    - ssh_configure
+
+- name: ensure sshd is enabled and running
+  systemd:
+    name: "{{ sshd_sshd_daemon }}"
+    state: started
+    enabled: yes
+  become: true
+  tags:
+    - always
