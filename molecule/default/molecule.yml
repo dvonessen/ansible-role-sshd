@@ -1,35 +1,47 @@
----
 dependency:
   name: galaxy
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
+  name: docker
 platforms:
-  - name: hardeningcentos8
-    box: centos/8
-    box_version: 1905.1
-    memory: 4096
-    cpus: 4
-    provision: true
-    instance_raw_config_args:
-      - "vm.network 'forwarded_port', guest: 22222, host: 22221"
-  - name: hardeningdebian10
-    box: debian/buster64
-    box_version: 10.3.0
-    memory: 4096
-    cpus: 4
-    provision: true
-    instance_raw_config_args:
-      - "vm.network 'forwarded_port', guest: 22222, host: 22222"
+  - name: raspberrypicentos8
+    image: registry.gitlab.com/dvonessen/docker-molecule-nonroot/centos:8-systemd
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    command: "/usr/lib/systemd/systemd"
+    exposed_ports:
+      - 2222/tcp
+    published_ports:
+      - 0.0.0.0:2222:2222/tcp
+  - name: raspberrypidebian10
+    image: registry.gitlab.com/dvonessen/docker-molecule-nonroot/debian:10-systemd
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    command: "/lib/systemd/systemd"
+    exposed_ports:
+      - 2222/tcp
+    published_ports:
+      - 0.0.0.0:2223:2222/tcp
+  - name: raspberrypiubuntu2004
+    image: registry.gitlab.com/dvonessen/docker-molecule-nonroot/ubuntu:20.04-systemd
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    command: "/lib/systemd/systemd"
+    exposed_ports:
+      - 2222/tcp
+    published_ports:
+      - 0.0.0.0:2224:2222/tcp
 provisioner:
   name: ansible
   config_options:
     defaults:
       stdout_callback: yaml
       interpreter_python: auto_silent
-verifier:
-  name: ansible
 lint: |
   set -e
   yamllint -c .yamllint .

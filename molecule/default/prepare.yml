@@ -1,0 +1,13 @@
+- name: Prepare
+  hosts: all
+  remote_user: ansible
+  debugger: on_failed
+  tasks:
+    - name: ensure /var/run/sshd is present
+      file:
+        path: /var/run/sshd
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+      become: true
