@@ -8,7 +8,9 @@
         - "{{ ansible_os_family | lower }}.yml"
       skip: true
   tags:
-    - always
+    - sshd_all
+    - sshd_install
+    - ssh_configure
 
 - name: import install.yml
   import_tasks: install.yml
@@ -29,4 +31,6 @@
     enabled: yes
   become: true
   tags:
-    - always
+    - sshd_all
+    - sshd_install
+    - ssh_configure
