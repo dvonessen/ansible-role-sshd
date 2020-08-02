@@ -97,7 +97,13 @@ AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
 AcceptEnv XMODIFIERS
 
 # override default of no subsystems
-Subsystem sftp	/usr/libexec/openssh/sftp-server
+{% if ansible_os_family | lower == "debian" -%}
+Subsystem sftp /usr/lib/openssh/sftp-server
+{% elif ansible_os_family | lower == "redhat" -%}
+Subsystem sftp /usr/libexec/openssh/sftp-server
+{% elif ansible_os_family | lower == "archlinux" -%}
+Subsystem sftp /usr/lib/ssh/sftp-server
+{%- endif %}
 
 # Example of overriding settings on a per-user basis
 #Match User anoncvs
