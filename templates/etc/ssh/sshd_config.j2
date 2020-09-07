@@ -10,8 +10,11 @@
 
 # Network
 Port {{ sshd_config_port }}
-AddressFamily inet
-ListenAddress 0.0.0.0
+AddressFamily any
+ListenAddress {{ sshd_config_ipv4_listen_address }}
+{% if sshd_config_enable_ipv6 %}
+ListenAddress {{ sshd_config_ipv6_listen_address }}
+{% endif %}
 
 {% for host_key_file in sshd_config_host_key_config %}
 HostKey {{ sshd_dir }}/{{ host_key_file.file_name }}

@@ -4,7 +4,10 @@
 sshd_no_log: true
 
 # Configuration settings for sshd
+sshd_config_enable_ipv6: true
 sshd_config_port: 22
+sshd_config_ipv4_listen_address: "0.0.0.0"
+sshd_config_ipv6_listen_address: "::"
 sshd_config_host_key_config: []
   # - file_name: ""
   #   privat_key: ""
